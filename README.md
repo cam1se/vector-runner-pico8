@@ -18,7 +18,12 @@ The game should include:
 
 Prototype and test in desktop PICO-8. Keep the cartridge within PICO-8's 8,192-token code limit and avoid unsupported features where compatibility with PICO-8 substitutes is needed.
 
-The release artifact is `vector_runner_pico8.p8.png`, exported from PICO-8 with `save vector_runner_pico8.p8.png`. Test it on the CubeXX using MustardOS's PICO-8-compatible runtime by placing it in the device's PICO-8 ROM folder and launching it there.
+The release artifact is `vector_runner_pico8.p8.png`, exported from PICO-8
+with the repository workflow. Run
+`PICO8_BIN=/path/to/pico8 make build`; this runs the host checks and writes the
+PNG beside the source without overwriting an existing artifact. Test it on the
+CubeXX using MustardOS's PICO-8-compatible runtime by placing the PNG in the
+device's PICO-8 ROM folder and launching it there.
 
 ## Build status
 
@@ -42,11 +47,12 @@ world-space lateral coordinate is used for road projection and collision checks.
 
 The licensed official PICO-8 v0.2.7 macOS package is available locally. macOS
 Gatekeeper must be approved once (Control-click `PICO-8.app`, choose **Open**,
-then confirm) before its headless exporter can be used. Once approved, export
-with `PICO8_BIN=/path/to/pico8 make export-png`; it refuses to overwrite an
-existing PNG. Copy the result to the device runtime's PICO-8 ROM folder. The
-PNG has not yet been produced, and this cartridge has not yet been tested on a
-CubeXX/MustardOS device.
+then confirm) before its headless exporter can be used. `make export-png`
+refuses to overwrite an existing PNG and verifies that PICO-8 created a
+non-empty file. Copy the result to the device runtime's PICO-8 ROM folder. The
+PNG has not yet been produced in this environment because the extracted app's
+headless invocation did not emit an artifact, and this cartridge has not yet
+been tested on a CubeXX/MustardOS device.
 
 ## Development checks
 
