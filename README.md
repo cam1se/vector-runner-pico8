@@ -36,8 +36,10 @@ title, restart, and best-score flow. The player starts with three shield
 segments and gets a short post-hit grace time. Green and purple cubes award
 different point values, blue repairs one shield, and white grants temporary
 invincibility. A red EMP mine briefly disrupts the depth view, and the
-projection gradually zooms as velocity rises. These are independent mechanics,
-not copied assets or code.
+projection gradually zooms as velocity rises. The title screen now has an
+original neon launch tableau and the runner has animated engine glow, all drawn
+with PICO-8 primitives so no external art assets are required. These are
+independent mechanics, not copied assets or code.
 
 Controls: left/right D-pad steer; either O or X starts and restarts; X pauses
 and resumes during a run without affecting score. The earlier 2007 build had a

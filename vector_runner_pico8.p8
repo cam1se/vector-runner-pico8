@@ -279,6 +279,11 @@ function ship()
  line(x,y+2,x-7,y+5,c)
  line(x-4,y+4,x,y+9,c)
  line(x,y+9,x+4,y+4,c)
+ -- animated exhaust keeps the runner readable at handheld scale
+ local flame=4+(flr(dist)%3)
+ line(x-3,y+8,x-3,y+flame+8,9)
+ line(x+3,y+8,x+3,y+flame+8,9)
+ if flr(dist)%2==0 then line(x,y+9,x,y+flame+10,10) end
 end
 
 function hud()
@@ -291,15 +296,34 @@ function hud()
 end
 
 function title()
- rectfill(5,39,122,105,0)
- rect(5,39,122,105,12)
- print("vector runner",27,46,12)
- print("d-pad: steer",31,58,7)
- print("avoid the wire",25,65,8)
- print("green/purple: points",21,72,3)
- print("blue: shield  white: inv",13,79,11)
- print("red wire: mine/pyramids",16,86,8)
- print("press o / x",31,97,10)
+ -- original neon launch tableau, drawn only with PICO-8 primitives
+ rectfill(0,31,127,127,1)
+ circfill(103,39,12,9)
+ circfill(103,39,8,10)
+ for y=48,64,4 do line(0,y,127,y,13) end
+ for x=7,121,19 do line(x,66,x-12,105,5) end
+ line(0,67,127,67,12)
+ rectfill(0,102,127,127,0)
+ line(0,103,127,103,5)
+ line(0,115,127,115,1)
+ line(0,124,127,124,5)
+ rectfill(6,42,121,98,0)
+ rect(6,42,121,98,12)
+ print("VECTOR",36,48,12)
+ print("RUNNER",36,57,10)
+ line(28,63,99,63,8)
+ print("d-pad: steer",31,70,7)
+ print("avoid the wire",25,77,8)
+ print("green/purple: points",21,84,3)
+ print("blue: shield  white: inv",13,90,11)
+ print("press o / x",31,105,10)
+ -- small launch ship / beacon below the card
+ line(64,111,59,121,12)
+ line(64,111,69,121,12)
+ line(59,121,64,119,12)
+ line(69,121,64,119,12)
+ line(62,122,62,126,9)
+ line(66,122,66,126,9)
 end
 
 function paused()
