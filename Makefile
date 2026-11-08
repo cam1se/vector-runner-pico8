@@ -16,7 +16,9 @@ runtime-smoke:
 export-png:
 	@test -n "$(PICO8_BIN)" || (echo "Set PICO8_BIN to the PICO-8 executable"; exit 2)
 	@test ! -e "$(ARTIFACT)" || (echo "Refusing to overwrite $(ARTIFACT)"; exit 2)
-	$(PICO8_BIN) "$(abspath $(CART))" -export "$(abspath $(ARTIFACT))"
+	# PICO-8 v0.2.7 treats an absolute -export path as a relative string.
+	# Run from the repository and pass the artifact basename for portability.
+	$(PICO8_BIN) "$(abspath $(CART))" -export "$(notdir $(ARTIFACT))"
 	@test -s "$(ARTIFACT)" || (echo "PICO-8 did not create $(ARTIFACT)"; exit 1)
 
 # Full local release check. The exporter is intentionally explicit because it

@@ -50,9 +50,10 @@ Gatekeeper must be approved once (Control-click `PICO-8.app`, choose **Open**,
 then confirm) before its headless exporter can be used. `make export-png`
 refuses to overwrite an existing PNG and verifies that PICO-8 created a
 non-empty file. Copy the result to the device runtime's PICO-8 ROM folder. The
-PNG has not yet been produced in this environment because the extracted app's
-headless invocation did not emit an artifact, and this cartridge has not yet
-been tested on a CubeXX/MustardOS device.
+PNG is now checked in and was exported successfully with the licensed PICO-8
+v0.2.7 runtime. The same runtime loaded the generated PNG for a three-second
+headless smoke run; this cartridge has not yet been tested on a CubeXX/MustardOS
+device.
 
 ## Development checks
 
