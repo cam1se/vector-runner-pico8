@@ -28,11 +28,15 @@ APIs: `btn`, `line`, `print`, `sfx`, tables, and numeric helpers. It implements
 the scrolling projected grid, wireframe barriers, three-lane patterns, diamond
 power-ups (yellow score, green shield repair, purple temporary invincibility),
 world-space steering/collision, score, acceleration, title, restart, and
-best-score flow.
+best-score flow. A blue EMP mine briefly disrupts the depth view, and the
+projection gradually zooms as velocity rises. These are independent mechanics,
+not copied assets or code.
 
 Controls: left/right D-pad steer; either O or X starts and restarts; X pauses
-and resumes during a run. The player ship stays centred visually while its
-world-space lateral coordinate is used for road projection and collision checks.
+and resumes during a run. Pausing costs 250 points (never below zero), matching
+the original game's risk/reward intent within PICO-8's standard O/X controls.
+The player ship stays centred visually while its world-space lateral coordinate
+is used for road projection and collision checks.
 
 The licensed official PICO-8 v0.2.7 macOS package is available locally. macOS
 Gatekeeper must be approved once (Control-click `PICO-8.app`, choose **Open**,
@@ -47,7 +51,7 @@ CubeXX/MustardOS device.
 Run `make test` to execute the deterministic host-Lua behavior suite. It loads
 the cartridge's `__lua__` section, expands only PICO-8's `+=`/`-=` syntax, and
 provides a deliberately small shim for the APIs used by the game. It covers
-start flow, bounded steering, all three pickup effects, shield/invincibility
+start flow, bounded steering, all three pickup effects, EMP, shield/invincibility
 collision behavior, game-over, drawing, and sound-event calls.
 
 For handheld-compatibility smoke checks, an MIT-licensed `tac08` runtime was
@@ -63,12 +67,15 @@ FAKE-08 compatibility, with host-only verification isolated in `scripts/`.
 
 The user referenced a starter `vector_runner_pico8.p8` attachment from a separate ChatGPT conversation. That attachment and its download link were not available in the accessible conversation archive or common local download folders when this repository was created. Do not claim to have retrieved, tested, or incorporated it. If it becomes available, inspect and test it before deciding whether to build on it; otherwise implement the cartridge from scratch and identify that provenance honestly.
 
-No original Flash/ActionScript source has been retrieved or used. Public game
-descriptions from [Kongregate](https://www.kongregate.com/en/games/digyourowngrave/vector-runner)
-and [Newgrounds](https://www.newgrounds.com/portal/view/412588) document the
-left/right steering, hazards, score pickups, shield recharge, and
-invincibility that informed the independently authored mechanics above. No
-original art, audio, code, or assets are included here.
+No original Flash/ActionScript source has been retrieved or used. On 2026-11-08,
+the public [Newgrounds](https://www.newgrounds.com/portal/view/412588) player
+was opened in a normal browser and Ruffle reported that it could not load the
+hosted SWF because the file no longer exists. The page's author comments and
+public reviews document steering, score pickups, shield recharge,
+invincibility, an EMP mine that disrupts vision, progressive speed/camera zoom,
+and a 250-point pause cost. Those behavior-level facts informed the
+independently authored mechanics above. No original art, audio, code, or assets
+are included here.
 
 ## Rights
 

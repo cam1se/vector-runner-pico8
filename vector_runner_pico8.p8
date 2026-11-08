@@ -18,6 +18,7 @@ function reset()
  dist=0
  shield=2
  inv=0
+ emp=0
  flash=0
  objs={}
  nextz=32
@@ -30,7 +31,8 @@ function spawn(first)
  local kind=1
  -- distinct original-style pickup lanes
  if not first then
-  if wave%11==7 then kind=4
+  if wave%17==12 then kind=5
+  elseif wave%11==7 then kind=4
   elseif wave%7==4 then kind=3
   elseif wave%4==3 then kind=2 end
  end
@@ -62,7 +64,11 @@ function _update60()
   if btnp(5) then state=1 end
   return
  end
- if btnp(5) then state=3 return end
+ if btnp(5) then
+  score=max(0,score-250)
+  state=3
+  return
+ end
  local steer=0
  if btn(0) then steer-=1 end
  if btn(1) then steer+=1 end
@@ -72,12 +78,18 @@ function _update60()
  nextz-=speed
  score+=1+flr(speed*2)
  if inv>0 then inv-=1 end
+ if emp>0 then emp-=1 end
  if flash>0 then flash-=1 end
  for o in all(objs) do
   o.z-=speed
   if o.z<7 and o.z>-1 and abs(px-o.x)<o.w+.12 then
-   if o.k>1 then
+   if o.k>1 and o.k<5 then
     collect(o)
+   elseif o.k==5 then
+    emp=90
+    o.z=-9
+    flash=8
+    sfx(3)
    elseif inv>0 then
     score+=25
     o.z=-9
@@ -109,11 +121,11 @@ function collect(o)
 end
 
 function py(z)
- return 30+1050/(z+12)
+ return 30+1050/(z+12)*(1+(speed-.42)*.35)
 end
 
 function ps(z)
- return 900/(z+12)
+ return 900/(z+12)*(1+(speed-.42)*.35)
 end
 
 function projx(x,z)
@@ -126,16 +138,29 @@ end
 
 function _draw()
  cls(0)
- stars()
- road()
- for o in all(objs) do
-  if o.z<120 then obstacle(o) end
+ if emp>0 then
+  blackout()
+ else
+  stars()
+  road()
+  for o in all(objs) do
+   if o.z<120 then obstacle(o) end
+  end
+  ship()
  end
- ship()
  hud()
  if state==0 then title() end
  if state==2 then over() end
  if state==3 then paused() end
+end
+
+function blackout()
+ -- an EMP deliberately removes the depth cues for a short time
+ for i=1,18 do
+  local y=(i*23+emp*3)%120+8
+  line(0,y,127,y,i%2==0 and 1 or 5)
+ end
+ print("emp interference",31,59,6)
 end
 
 function stars()
@@ -182,10 +207,11 @@ function obstacle(o)
  local b=projx(o.x+w,zf)
  local y2=py(zf)
  if o.k>1 then
-  -- yellow: score, green: shield, purple: invincibility
+  -- yellow: score, green: shield, purple: invincibility, blue: EMP
   local c=10
   if o.k==3 then c=11 end
   if o.k==4 then c=14 end
+  if o.k==5 then c=12 end
   local cx=projx(o.x,z)
   local cy=py(z)-ps(z)*.12
   local r=ps(z)*.14
@@ -232,17 +258,19 @@ function hud()
  print("v"..flr(speed*100),97,1,10)
  print("s"..shield,78,1,11)
  if inv>0 then print("i",90,1,14) end
+ if emp>0 then print("e",90,1,12) end
 end
 
 function title()
- rectfill(11,43,116,84,0)
- rect(11,43,116,84,12)
- print("vector runner",27,50,12)
- print("d-pad: steer",31,62,7)
- print("avoid the wire",25,69,8)
- print("yellow: score",29,76,10)
- print("green: shield  purple: inv",9,82,11)
- print("press o / x",31,91,10)
+ rectfill(5,39,122,105,0)
+ rect(5,39,122,105,12)
+ print("vector runner",27,46,12)
+ print("d-pad: steer",31,58,7)
+ print("avoid the wire",25,65,8)
+ print("yellow: score",29,72,10)
+ print("green: shield  purple: inv",9,79,11)
+ print("blue: emp mine",31,86,12)
+ print("press o / x",31,97,10)
 end
 
 function paused()

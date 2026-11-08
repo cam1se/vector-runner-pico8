@@ -63,7 +63,7 @@ start()
 check(#env.objs > 0 and env.speed > 0, "run initializes active obstacles")
 pressed[5] = true
 env._update60()
-check(env.state == 3, "X pauses an active run")
+check(env.state == 3 and env.score == 0, "X pauses and cannot make score negative")
 pressed[5] = true
 env._update60()
 check(env.state == 1, "X resumes a paused run")
@@ -95,6 +95,12 @@ env.inv = 0
 env.objs = {{x = env.px, z = 6, k = 4, w = .12}}
 env._update60()
 check(env.inv > 0, "invincibility pickup starts a timer")
+
+env.state = 1
+env.emp = 0
+env.objs = {{x = env.px, z = 6, k = 5, w = .12}}
+env._update60()
+check(env.emp > 0 and #env.objs == 0, "EMP mine briefly removes depth vision")
 
 env.state = 1
 local shield_before = env.shield
