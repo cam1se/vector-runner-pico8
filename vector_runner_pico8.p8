@@ -16,9 +16,10 @@ function reset()
  speed=0.42
  score=0
  dist=0
- shield=2
+ shield=3
  inv=0
  emp=0
+ hurt=0
  flash=0
  objs={}
  nextz=32
@@ -29,12 +30,16 @@ end
 function spawn(first)
  local z=nextz
  local kind=1
- -- distinct original-style pickup lanes
+ -- ordered waves give every pattern a readable escape lane
  if not first then
-  if wave%17==12 then kind=5
-  elseif wave%11==7 then kind=4
-  elseif wave%7==4 then kind=3
-  elseif wave%4==3 then kind=2 end
+  local w=wave%18
+  if w==3 then kind=5
+  elseif w==5 then kind=2
+  elseif w==7 then kind=6
+  elseif w==9 then kind=3
+  elseif w==11 then kind=7
+  elseif w==13 then kind=4
+  elseif w==15 then kind=8 end
  end
  local lanes={-0.52,0,0.52}
  local n=1
@@ -43,9 +48,14 @@ function spawn(first)
   if wave%9==6 then n=2 end
  end
  for i=1,n do
-  local lane=lanes[((wave+i*2)%3)+1]
+  local lane=lanes[((wave+i)%3)+1]
   if kind>1 then lane=lanes[(wave%3)+1] end
-  add(objs,{x=lane,z=z+(i-1)*5,k=kind,w=kind>1 and .12 or .18})
+  local w=.14
+  if kind==2 then w=.20 end
+  if kind==3 then w=.30 end
+  if kind==4 then w=.11 end
+  if kind>4 then w=.10 end
+  add(objs,{x=lane,z=z+(i-1)*6,k=kind,w=w})
  end
  nextz+=18+((wave%3)*5)
  wave+=1
@@ -78,18 +88,19 @@ function _update60()
  score+=1+flr(speed*2)
  if inv>0 then inv-=1 end
  if emp>0 then emp-=1 end
+ if hurt>0 then hurt-=1 end
  if flash>0 then flash-=1 end
  for o in all(objs) do
   o.z-=speed
   if o.z<7 and o.z>-1 and abs(px-o.x)<o.w+.12 then
-   if o.k>1 and o.k<5 then
+   if o.k>4 then
     collect(o)
-   elseif o.k==5 then
+   elseif o.k==4 then
     emp=90
     o.z=-9
     flash=8
     sfx(3)
-   elseif inv>0 then
+   elseif inv>0 or hurt>0 then
     score+=25
     o.z=-9
     flash=5
@@ -98,7 +109,12 @@ function _update60()
     shield-=1
     o.z=-9
     flash=8
+    hurt=90
     sfx(1)
+    if shield==0 then
+     best=max(best,score)
+     state=2
+    end
    else
     best=max(best,score)
     state=2
@@ -111,9 +127,11 @@ function _update60()
 end
 
 function collect(o)
- if o.k==2 then score+=250 end
- if o.k==3 then shield=min(3,shield+1) end
- if o.k==4 then inv=360 end
+ -- green power, purple points, blue shield, white invincibility
+ if o.k==5 then score+=500 end
+ if o.k==6 then score+=1000 end
+ if o.k==7 then shield=min(3,shield+1) end
+ if o.k==8 then inv=600 end
  o.z=-9
  flash=8
  sfx(2)
@@ -205,12 +223,8 @@ function obstacle(o)
  local a=projx(o.x-w,zf)
  local b=projx(o.x+w,zf)
  local y2=py(zf)
- if o.k>1 then
-  -- yellow: score, green: shield, purple: invincibility, blue: EMP
-  local c=10
-  if o.k==3 then c=11 end
-  if o.k==4 then c=14 end
-  if o.k==5 then c=12 end
+ if o.k==4 then
+  local c=8
   local cx=projx(o.x,z)
   local cy=py(z)-ps(z)*.12
   local r=ps(z)*.14
@@ -220,21 +234,37 @@ function obstacle(o)
   line(cx-r,cy,cx,cy-r,c)
   return
  end
- local h=ps(z)*.32
- local hf=ps(zf)*.32
- -- a wireframe wedge/cube, deliberately no filled original art
- line(x1,y1,x2,y1,8)
- line(a,y2,b,y2,8)
- line(x1,y1,a,y2,8)
- line(x2,y1,b,y2,8)
- line(x1,y1,x1,y1-h,8)
- line(x2,y1,x2,y1-h,8)
- line(a,y2,a,y2-hf,8)
- line(b,y2,b,y2-hf,8)
- line(x1,y1-h,x2,y1-h,7)
- line(a,y2-hf,b,y2-hf,7)
- line(x1,y1-h,a,y2-hf,7)
- line(x2,y1-h,b,y2-hf,7)
+ if o.k>4 then
+  local c=11
+  if o.k==5 then c=3 end
+  if o.k==6 then c=13 end
+  if o.k==8 then c=7 end
+  local cx=projx(o.x,z)
+  local cy=py(z)-ps(z)*.14
+  local r=max(1,ps(z)*.11)
+  rect(cx-r,cy-r,cx+r,cy+r,c)
+  line(cx-r,cy-r,cx,cy-r-r,c)
+  line(cx+r,cy-r,cx+r+r,cy-r-r,c)
+  line(cx,cy-r-r,cx+r+r,cy-r-r,c)
+  return
+ end
+ local h=ps(z)*.26
+ if o.k==2 then h=ps(z)*.50 end
+ if o.k==3 then h=ps(z)*.15 end
+ local ax=projx(o.x,z+2.5)
+ local ay=py(z+2.5)-h
+ local c=8
+ if o.k==2 then c=9 end
+ if o.k==3 then c=10 end
+ -- independent wireframe pyramid: four base edges converge at one apex
+ line(x1,y1,x2,y1,c)
+ line(a,y2,b,y2,c)
+ line(x1,y1,a,y2,c)
+ line(x2,y1,b,y2,c)
+ line(x1,y1,ax,ay,c)
+ line(x2,y1,ax,ay,c)
+ line(a,y2,ax,ay,c)
+ line(b,y2,ax,ay,c)
 end
 
 function ship()
@@ -255,7 +285,7 @@ function hud()
  rectfill(0,0,127,7,0)
  print("score "..score,2,1,7)
  print("v"..flr(speed*100),97,1,10)
- print("s"..shield,78,1,11)
+ print("sh "..shield,73,1,11)
  if inv>0 then print("i",90,1,14) end
  if emp>0 then print("e",90,1,12) end
 end
@@ -266,9 +296,9 @@ function title()
  print("vector runner",27,46,12)
  print("d-pad: steer",31,58,7)
  print("avoid the wire",25,65,8)
- print("yellow: score",29,72,10)
- print("green: shield  purple: inv",9,79,11)
- print("blue: emp mine",31,86,12)
+ print("green/purple: points",21,72,3)
+ print("blue: shield  white: inv",13,79,11)
+ print("red wire: mine/pyramids",16,86,8)
  print("press o / x",31,97,10)
 end
 

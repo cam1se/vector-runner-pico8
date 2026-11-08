@@ -25,10 +25,12 @@ The release artifact is `vector_runner_pico8.p8.png`, exported from PICO-8 with 
 `vector_runner_pico8.p8` is now an independently authored, editable PICO-8
 source cartridge. It uses only standard Lua and PICO-8 drawing/input/audio
 APIs: `btn`, `line`, `print`, `sfx`, tables, and numeric helpers. It implements
-the scrolling projected grid, wireframe barriers, three-lane patterns, diamond
-power-ups (yellow score, green shield repair, purple temporary invincibility),
-world-space steering/collision, score, acceleration, title, restart, and
-best-score flow. A blue EMP mine briefly disrupts the depth view, and the
+the scrolling projected grid, wireframe normal/tall/wide pyramids, readable
+three-lane patterns, world-space steering/collision, score, acceleration,
+title, restart, and best-score flow. The player starts with three shield
+segments and gets a short post-hit grace time. Green and purple cubes award
+different point values, blue repairs one shield, and white grants temporary
+invincibility. A red EMP mine briefly disrupts the depth view, and the
 projection gradually zooms as velocity rises. These are independent mechanics,
 not copied assets or code.
 
@@ -51,8 +53,10 @@ CubeXX/MustardOS device.
 Run `make test` to execute the deterministic host-Lua behavior suite. It loads
 the cartridge's `__lua__` section, expands only PICO-8's `+=`/`-=` syntax, and
 provides a deliberately small shim for the APIs used by the game. It covers
-start flow, bounded steering, pause score preservation, all three pickup effects, EMP, shield/invincibility
-collision behavior, game-over, drawing, and sound-event calls.
+start flow, bounded steering, pause score preservation, all four cube effects,
+EMP, shield/invincibility collision behavior (including final-shield loss),
+game-over, drawing, and sound-event calls. The current suite has 16 named
+checks.
 
 For handheld-compatibility smoke checks, an MIT-licensed `tac08` runtime was
 built locally from source; it successfully stayed running with this cartridge
@@ -89,6 +93,19 @@ the binary GET requests; the files were therefore not downloaded, inspected, or
 used. Flashpoint's 9o3o browser player currently falls back to the dead original
 URL and likewise cannot load this title. This is evidence that compiled copies
 are preserved, not evidence that authoring source is public.
+
+Later on 2026-11-08, the user supplied those two preserved SWFs privately from
+their home server: the original-site variant (1,493,209 bytes, SHA-256
+`8ef4547cf3988fd441903dade0045e1ab223a6092fa46b5c25e729003d6dae3b`) and
+the Kongregate variant (1,325,269 bytes, SHA-256
+`57ae696fca72984ce5da727bd087182109cb6a1de94995e89feb8377963f6e61`). They
+are compiled Flash 9/11 binaries, not editable authoring source. They were
+copied only to a temporary, non-repository inspection location and their class
+metadata/decompiled behavior was consulted to verify high-level features such
+as the three shield segments, pyramid size variants, mine, and cube categories.
+No original ActionScript, art, audio, or extracted assets were copied into this
+project; no claim is made that decompilation is complete or equivalent to the
+author's source.
 
 ## Rights
 

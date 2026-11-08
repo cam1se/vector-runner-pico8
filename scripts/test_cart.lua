@@ -80,26 +80,26 @@ check(env.px >= -.78 and env.px <= .78, "right steering remains world-bounded")
 -- Pickup and collision paths are kept deterministic by injecting an object at
 -- the player's collision plane.
 env.state = 1
-env.objs = {{x = env.px, z = 6, k = 2, w = .12}}
+env.objs = {{x = env.px, z = 6, k = 5, w = .10}}
 local before = env.score
 env._update60()
 check(env.score > before and #env.objs == 0, "score pickup is collected")
 
 env.state = 1
 env.shield = 1
-env.objs = {{x = env.px, z = 6, k = 3, w = .12}}
+env.objs = {{x = env.px, z = 6, k = 7, w = .10}}
 env._update60()
 check(env.shield == 2, "shield pickup repairs one shield")
 
 env.state = 1
 env.inv = 0
-env.objs = {{x = env.px, z = 6, k = 4, w = .12}}
+env.objs = {{x = env.px, z = 6, k = 8, w = .10}}
 env._update60()
 check(env.inv > 0, "invincibility pickup starts a timer")
 
 env.state = 1
 env.emp = 0
-env.objs = {{x = env.px, z = 6, k = 5, w = .12}}
+env.objs = {{x = env.px, z = 6, k = 4, w = .11}}
 env._update60()
 check(env.emp > 0 and #env.objs == 0, "EMP mine briefly removes depth vision")
 
@@ -112,15 +112,24 @@ check(env.state == 1 and env.shield == shield_before, "invincibility absorbs a b
 env.state = 1
 env.objs = {{x = env.px, z = 6, k = 1, w = .18}}
 env.inv = 0
-env.shield = 1
+env.hurt = 0
+env.shield = 2
 env._update60()
-check(env.state == 1 and env.shield == 0, "shield absorbs one barrier")
+check(env.state == 1 and env.shield == 1, "shield absorbs one barrier")
 
 env.state = 1
 env.objs = {{x = env.px, z = 6, k = 1, w = .18}}
+env.hurt = 0
 env.shield = 0
 env._update60()
 check(env.state == 2, "unshielded barrier ends run")
+
+env.state = 1
+env.hurt = 0
+env.shield = 1
+env.objs = {{x = env.px, z = 6, k = 2, w = .20}}
+env._update60()
+check(env.state == 2 and env.shield == 0, "final shield loss ends the run")
 
 draw_calls = 0
 env._draw()
