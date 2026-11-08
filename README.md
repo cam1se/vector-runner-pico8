@@ -26,30 +26,49 @@ The release artifact is `vector_runner_pico8.p8.png`, exported from PICO-8 with 
 source cartridge. It uses only standard Lua and PICO-8 drawing/input/audio
 APIs: `btn`, `line`, `print`, `sfx`, tables, and numeric helpers. It implements
 the scrolling projected grid, wireframe barriers, three-lane patterns, diamond
-power-ups (score plus a temporary shield), world-space steering/collision,
-score, acceleration, title, restart, and best-score flow.
+power-ups (yellow score, green shield repair, purple temporary invincibility),
+world-space steering/collision, score, acceleration, title, restart, and
+best-score flow.
 
-Controls: left/right D-pad steer; either O or X starts and restarts. The player
-ship stays centred visually while its world-space lateral coordinate is used for
-road projection and collision checks.
+Controls: left/right D-pad steer; either O or X starts and restarts; X pauses
+and resumes during a run. The player ship stays centred visually while its
+world-space lateral coordinate is used for road projection and collision checks.
 
-No licensed PICO-8 runtime was available in this worktree, so the requested
-`vector_runner_pico8.p8.png` export was not created. Likewise, this cartridge
-has not been run on a CubeXX/MustardOS device. To export when PICO-8 is
-available: load `vector_runner_pico8.p8`, run it, then use
-`save vector_runner_pico8.p8.png`; copy that PNG to the device runtime's
-PICO-8 ROM folder for a real-device check.
+The licensed official PICO-8 v0.2.7 macOS package is available locally. macOS
+Gatekeeper must be approved once (Control-click `PICO-8.app`, choose **Open**,
+then confirm) before its headless exporter can be used. Once approved, export
+with `PICO8_BIN=/path/to/pico8 make export-png`; it refuses to overwrite an
+existing PNG. Copy the result to the device runtime's PICO-8 ROM folder. The
+PNG has not yet been produced, and this cartridge has not yet been tested on a
+CubeXX/MustardOS device.
 
-Source verification performed here: inspected the source for PICO-8-compatible
-APIs and cartridge section structure; parsed the Lua after mechanically
-expanding PICO-8's `+=`/`-=` shorthand; and ran a host-Lua API-shim smoke test
-through title/start, diamond pickup, barrier collision, and drawing paths. No
-desktop PICO-8-compatible interpreter or device was installed, so this is not
-a PICO-8 or CubeXX execution test.
+## Development checks
+
+Run `make test` to execute the deterministic host-Lua behavior suite. It loads
+the cartridge's `__lua__` section, expands only PICO-8's `+=`/`-=` syntax, and
+provides a deliberately small shim for the APIs used by the game. It covers
+start flow, bounded steering, all three pickup effects, shield/invincibility
+collision behavior, game-over, drawing, and sound-event calls.
+
+For handheld-compatibility smoke checks, an MIT-licensed `tac08` runtime was
+built locally from source; it successfully stayed running with this cartridge
+for a headless launch. Its binary is intentionally ignored under `tools/bin/`.
+The project follows the useful testing practices of the MIT-licensed
+[PicoTestDriver](https://github.com/adamico/picotestdriver)—named scenarios,
+deterministic inputs, and bounded checks—but includes no third-party test code.
+The project keeps production code in one cartridge file for normal PICO-8 and
+FAKE-08 compatibility, with host-only verification isolated in `scripts/`.
 
 ## Provenance status
 
 The user referenced a starter `vector_runner_pico8.p8` attachment from a separate ChatGPT conversation. That attachment and its download link were not available in the accessible conversation archive or common local download folders when this repository was created. Do not claim to have retrieved, tested, or incorporated it. If it becomes available, inspect and test it before deciding whether to build on it; otherwise implement the cartridge from scratch and identify that provenance honestly.
+
+No original Flash/ActionScript source has been retrieved or used. Public game
+descriptions from [Kongregate](https://www.kongregate.com/en/games/digyourowngrave/vector-runner)
+and [Newgrounds](https://www.newgrounds.com/portal/view/412588) document the
+left/right steering, hazards, score pickups, shield recharge, and
+invincibility that informed the independently authored mechanics above. No
+original art, audio, code, or assets are included here.
 
 ## Rights
 
