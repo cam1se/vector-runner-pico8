@@ -65,7 +65,6 @@ function _update60()
   return
  end
  if btnp(5) then
-  score=max(0,score-250)
   state=3
   return
  end

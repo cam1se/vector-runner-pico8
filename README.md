@@ -33,10 +33,10 @@ projection gradually zooms as velocity rises. These are independent mechanics,
 not copied assets or code.
 
 Controls: left/right D-pad steer; either O or X starts and restarts; X pauses
-and resumes during a run. Pausing costs 250 points (never below zero), matching
-the original game's risk/reward intent within PICO-8's standard O/X controls.
-The player ship stays centred visually while its world-space lateral coordinate
-is used for road projection and collision checks.
+and resumes during a run without affecting score. The earlier 2007 build had a
+pause penalty, but the developer later said it was removed; this cartridge
+follows the later release. The player ship stays centred visually while its
+world-space lateral coordinate is used for road projection and collision checks.
 
 The licensed official PICO-8 v0.2.7 macOS package is available locally. macOS
 Gatekeeper must be approved once (Control-click `PICO-8.app`, choose **Open**,
@@ -51,7 +51,7 @@ CubeXX/MustardOS device.
 Run `make test` to execute the deterministic host-Lua behavior suite. It loads
 the cartridge's `__lua__` section, expands only PICO-8's `+=`/`-=` syntax, and
 provides a deliberately small shim for the APIs used by the game. It covers
-start flow, bounded steering, all three pickup effects, EMP, shield/invincibility
+start flow, bounded steering, pause score preservation, all three pickup effects, EMP, shield/invincibility
 collision behavior, game-over, drawing, and sound-event calls.
 
 For handheld-compatibility smoke checks, an MIT-licensed `tac08` runtime was
@@ -72,10 +72,14 @@ the public [Newgrounds](https://www.newgrounds.com/portal/view/412588) player
 was opened in a normal browser and Ruffle reported that it could not load the
 hosted SWF because the file no longer exists. The page's author comments and
 public reviews document steering, score pickups, shield recharge,
-invincibility, an EMP mine that disrupts vision, progressive speed/camera zoom,
-and a 250-point pause cost. Those behavior-level facts informed the
-independently authored mechanics above. No original art, audio, code, or assets
-are included here.
+invincibility, an EMP mine that disrupts vision, and progressive speed/camera
+zoom. The page preserves an earlier 250-point pause-cost note, while the later
+[Kongregate release](https://www.kongregate.com/en/games/digyourowngrave/vector-runner)
+says it was recoded in AS3 and its developer comment says that penalty was
+removed; the cartridge follows the later behavior. Flashpoint's catalog and
+[release notes](https://flashpointarchive.org/news/2021051000) confirm preserved
+compiled copies, including an older variant, but no editable author source has
+been found or used. No original art, audio, code, or assets are included here.
 
 ## Rights
 

@@ -61,9 +61,10 @@ end
 
 start()
 check(#env.objs > 0 and env.speed > 0, "run initializes active obstacles")
+env.score = 1000
 pressed[5] = true
 env._update60()
-check(env.state == 3 and env.score == 0, "X pauses and cannot make score negative")
+check(env.state == 3 and env.score == 1000, "X pauses without changing score")
 pressed[5] = true
 env._update60()
 check(env.state == 1, "X resumes a paused run")
