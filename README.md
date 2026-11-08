@@ -81,6 +81,15 @@ removed; the cartridge follows the later behavior. Flashpoint's catalog and
 compiled copies, including an older variant, but no editable author source has
 been found or used. No original art, audio, code, or assets are included here.
 
+On 2026-11-08, Flashpoint's public search API identified the preserved entry as
+`7c449d9d-3dd5-4b2d-915f-db90481cc358` (version 1.8) and disclosed archived
+original-site and Kongregate SWF paths. The archive returned valid SWF metadata
+(including MIME type and byte lengths), but this environment's web filter denied
+the binary GET requests; the files were therefore not downloaded, inspected, or
+used. Flashpoint's 9o3o browser player currently falls back to the dead original
+URL and likewise cannot load this title. This is evidence that compiled copies
+are preserved, not evidence that authoring source is public.
+
 ## Rights
 
 This is an independent remake, not an automatic conversion or redistribution of the original Flash source or assets. Keep any use or distribution of original material within the rights granted by its creator.
